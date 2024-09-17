@@ -1,21 +1,34 @@
 'use client'
 import { Input } from '@nextui-org/input';
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import { SearchIcon } from './icons';
 import { useRouter } from 'next/navigation';
+import { number, z } from 'zod';
 
 const SearchForm = () => {
     const [searchText, setSearchText] = useState("");
+    const [error, seterror] = useState("");
     const router = useRouter();
+const valideInputShema=z.string().min(2,"can't be less than 1 caracter").max(200)
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        
-        if (!searchText) return;
-        router.push(`events/${searchText}`)
+        const  input = valideInputShema.safeParse(searchText);
+         console.log(input.error)
+        if(!input.success){
+            seterror(input.error.errors[0].message)  
+            return 
+        }
+        const newserachtext=input.data
+        if (!searchText)
+            return;
 
-        console.log(searchText);
+        router.push(`events/${newserachtext}`)
+
+
     }
+
+
 
     return (
         <form onSubmit={handleSubmit}>
@@ -54,8 +67,10 @@ const SearchForm = () => {
                 startContent={
                     <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
                 }
+                isRequired
                 isClearable
             />
+            <p className=' text-sm text-danger-500 block h-2 px-2 mb-1'> {error} </p>
         </form>
     );
 }

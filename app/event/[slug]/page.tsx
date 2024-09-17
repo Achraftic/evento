@@ -27,14 +27,7 @@ const OneEventPage = async ({ params }: OneEventPageProps) => {
         data = await getEvent(slug)
 
     } catch (error: any) {
-        console.error('Error fetching data:', error.response.data);
-        let errorMsg = error.response.data
-        return <div className='w-max m-auto  flex flex-col items-center justify-center gap-4 '>
-            <p className={`${title({ size: "sm" })}`}> {errorMsg && "Somthing go wrong "}</p>
-            <Link className='flex w-max space-x-3 items-center outline-white/50 hover:outline-white transition  outline p-2 rounded-lg text-sm' href="/" >
-                <LinkIcon /> Back to home
-            </Link>
-        </div>;
+        throw new Error(error)
     }
     return (
         <div>
@@ -66,13 +59,13 @@ const OneEventPage = async ({ params }: OneEventPageProps) => {
                         <h1 className={` text-3xl font-bold `}> {data.name}</h1>
                         <h2 className={`${subtitle}`}>  Organizer par: {data.organizerName} </h2>
                         <h2 className={`${subtitle} flex items-center gap-1`}> <CiLocationOn size={23} /> {data.location} , {data.city} </h2>
-                        <p className='text-sm flex items-center gap-1'> <CiCalendarDate size={23} />  
-                         {new Date(data.date).toLocaleDateString('en-US', {
-                            weekday: 'short',
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric'
-                        })} </p>
+                        <p className='text-sm flex items-center gap-1'> <CiCalendarDate size={23} />
+                            {new Date(data.date).toLocaleDateString('en-US', {
+                                weekday: 'short',
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric'
+                            })} </p>
                         <Button color="secondary" className='w-max' fullWidth={false} variant="shadow" endContent={<HiOutlineTicket size={20} />}>Get Tickets</Button>
                     </div>
                 </div>
